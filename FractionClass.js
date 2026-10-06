@@ -69,8 +69,8 @@ class Fraction {
     equals(other) {
 
         return (
-            this.num === other.num &&
-            this.den === other.den
+            this.num * other.den ===
+            other.num * this.den
         );
     }
 
@@ -442,8 +442,8 @@ function startQuiz() {
 function fractionHTML(fraction) {
     return `
         <span class="fraction">
-            <span class="numerator">${fraction.numerator}</span>
-            <span class="denominator">${fraction.denominator}</span>
+            <span class="numerator">${fraction.num}</span>
+            <span class="denominator">${fraction.den}</span>
         </span>
     `;
 }
