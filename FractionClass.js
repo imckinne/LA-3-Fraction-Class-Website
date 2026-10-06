@@ -1,5 +1,5 @@
 // ==========================================
-// Fraction Class
+// FRACTION CLASS
 // ==========================================
 
 class Fraction {
@@ -10,13 +10,17 @@ class Fraction {
             throw new Error("Denominator cannot be zero.");
         }
 
+
         // Move negative sign to numerator
         if (denominator < 0) {
             numerator = -numerator;
             denominator = -denominator;
         }
 
+
+        // Simplify the fraction
         if (simplify) {
+
             const common = gcd(
                 Math.abs(numerator),
                 denominator
@@ -24,7 +28,9 @@ class Fraction {
 
             this.num = numerator / common;
             this.den = denominator / common;
+
         } else {
+
             this.num = numerator;
             this.den = denominator;
         }
@@ -33,6 +39,7 @@ class Fraction {
 
     // Check if fraction is simplified
     isSimplified() {
+
         return gcd(
             Math.abs(this.num),
             this.den
@@ -42,27 +49,24 @@ class Fraction {
 
     // Check if fraction is a whole number
     isInteger() {
+
         return this.den === 1;
     }
 
 
-    // Display fraction as a string
+    // Convert fraction to text
     toString() {
 
         if (this.den === 1) {
-            return `${this.num}`;
+            return String(this.num);
         }
 
         return `${this.num}/${this.den}`;
     }
 
 
-    // Compare two fractions
+    // Check if two fractions have the same value
     equals(other) {
-
-        if (typeof other === "number") {
-            other = new Fraction(other, 1);
-        }
 
         return (
             this.num === other.num &&
@@ -74,41 +78,50 @@ class Fraction {
     // Addition
     add(other) {
 
-        const newNum =
+        const newNumerator =
             this.num * other.den +
             other.num * this.den;
 
-        const newDen =
+        const newDenominator =
             this.den * other.den;
 
-        return new Fraction(newNum, newDen);
+        return new Fraction(
+            newNumerator,
+            newDenominator
+        );
     }
 
 
     // Subtraction
     subtract(other) {
 
-        const newNum =
+        const newNumerator =
             this.num * other.den -
             other.num * this.den;
 
-        const newDen =
+        const newDenominator =
             this.den * other.den;
 
-        return new Fraction(newNum, newDen);
+        return new Fraction(
+            newNumerator,
+            newDenominator
+        );
     }
 
 
     // Multiplication
     multiply(other) {
 
-        const newNum =
+        const newNumerator =
             this.num * other.num;
 
-        const newDen =
+        const newDenominator =
             this.den * other.den;
 
-        return new Fraction(newNum, newDen);
+        return new Fraction(
+            newNumerator,
+            newDenominator
+        );
     }
 
 
@@ -116,16 +129,21 @@ class Fraction {
     divide(other) {
 
         if (other.num === 0) {
-            throw new Error("Cannot divide by zero.");
+            throw new Error(
+                "Cannot divide by zero."
+            );
         }
 
-        const newNum =
+        const newNumerator =
             this.num * other.den;
 
-        const newDen =
+        const newDenominator =
             this.den * other.num;
 
-        return new Fraction(newNum, newDen);
+        return new Fraction(
+            newNumerator,
+            newDenominator
+        );
     }
 
 
@@ -134,23 +152,36 @@ class Fraction {
 
         input = input.trim();
 
+
+        // Example: 3/4
         if (input.includes("/")) {
 
             const parts = input.split("/");
 
+
             if (parts.length !== 2) {
-                throw new Error("Invalid format.");
+                throw new Error(
+                    "Invalid format."
+                );
             }
 
-            const numerator = parseInt(parts[0]);
-            const denominator = parseInt(parts[1]);
+
+            const numerator =
+                Number(parts[0]);
+
+            const denominator =
+                Number(parts[1]);
+
 
             if (
-                isNaN(numerator) ||
-                isNaN(denominator)
+                !Number.isInteger(numerator) ||
+                !Number.isInteger(denominator)
             ) {
-                throw new Error("Invalid number.");
+                throw new Error(
+                    "Invalid number."
+                );
             }
+
 
             return new Fraction(
                 numerator,
@@ -159,11 +190,17 @@ class Fraction {
             );
         }
 
-        const number = parseInt(input);
 
-        if (isNaN(number)) {
-            throw new Error("Invalid number.");
+        // Example: 2
+        const number = Number(input);
+
+
+        if (!Number.isInteger(number)) {
+            throw new Error(
+                "Invalid number."
+            );
         }
+
 
         return new Fraction(
             number,
@@ -175,7 +212,7 @@ class Fraction {
 
 
 // ==========================================
-// Greatest Common Divisor
+// GREATEST COMMON DIVISOR
 // ==========================================
 
 function gcd(a, b) {
@@ -194,43 +231,9 @@ function gcd(a, b) {
 
 
 // ==========================================
-// Random Fraction Generator
+// RANDOM FRACTIONS
 // ==========================================
 
-function generateFraction(
-    minVal = -10,
-    maxVal = 10,
-    forceNonInteger = false
-) {
-
-    while (true) {
-
-        const minDenominator =
-            forceNonInteger ? 2 : 1;
-
-        const denominator =
-            randomInt(minDenominator, 10);
-
-        const numerator =
-            randomInt(minVal, maxVal);
-
-        const fraction =
-            new Fraction(numerator, denominator);
-
-
-        if (
-            forceNonInteger &&
-            fraction.isInteger()
-        ) {
-            continue;
-        }
-
-        return fraction;
-    }
-}
-
-
-// Generate random integer
 function randomInt(min, max) {
 
     return Math.floor(
@@ -239,66 +242,151 @@ function randomInt(min, max) {
 }
 
 
+function generateFraction(
+    forceNonInteger = false
+) {
+
+    while (true) {
+
+        const minDenominator =
+            forceNonInteger ? 2 : 1;
+
+
+        const denominator =
+            randomInt(
+                minDenominator,
+                10
+            );
+
+
+        const numerator =
+            randomInt(-10, 10);
+
+
+        const fraction =
+            new Fraction(
+                numerator,
+                denominator
+            );
+
+
+        // Make sure it isn't a whole number
+        if (
+            forceNonInteger &&
+            fraction.isInteger()
+        ) {
+            continue;
+        }
+
+
+        return fraction;
+    }
+}
+
+
 // ==========================================
-// Quiz Variables
+// QUIZ VARIABLES
 // ==========================================
 
 let currentQuestion = 0;
+
 let totalQuestions = 0;
+
 let score = 0;
 
-let currentExpectedAnswer = null;
+let expectedAnswer = null;
+
+let questionLocked = false;
 
 
 // ==========================================
-// HTML Elements
+// GET HTML ELEMENTS
 // ==========================================
 
 const startScreen =
-    document.getElementById("start-screen");
+    document.getElementById(
+        "start-screen"
+    );
 
 const quizScreen =
-    document.getElementById("quiz-screen");
+    document.getElementById(
+        "quiz-screen"
+    );
 
 const resultsScreen =
-    document.getElementById("results-screen");
+    document.getElementById(
+        "results-screen"
+    );
+
 
 const questionCount =
-    document.getElementById("question-count");
+    document.getElementById(
+        "question-count"
+    );
+
 
 const startButton =
-    document.getElementById("start-button");
+    document.getElementById(
+        "start-button"
+    );
+
 
 const submitButton =
-    document.getElementById("submit-button");
+    document.getElementById(
+        "submit-button"
+    );
+
 
 const restartButton =
-    document.getElementById("restart-button");
+    document.getElementById(
+        "restart-button"
+    );
+
 
 const answerInput =
-    document.getElementById("answer");
+    document.getElementById(
+        "answer"
+    );
+
 
 const problem =
-    document.getElementById("problem");
+    document.getElementById(
+        "problem"
+    );
+
 
 const questionNumber =
-    document.getElementById("question-number");
+    document.getElementById(
+        "question-number"
+    );
+
 
 const feedback =
-    document.getElementById("feedback");
+    document.getElementById(
+        "feedback"
+    );
+
 
 const finalScore =
-    document.getElementById("final-score");
+    document.getElementById(
+        "final-score"
+    );
+
 
 const percentage =
-    document.getElementById("percentage");
+    document.getElementById(
+        "percentage"
+    );
+
 
 const resultMessage =
-    document.getElementById("result-message");
+    document.getElementById(
+        "result-message"
+    );
 
 
 // ==========================================
-// Start Quiz
+// START QUIZ BUTTON
 // ==========================================
 
 startButton.addEventListener(
@@ -309,49 +397,74 @@ startButton.addEventListener(
 
 function startQuiz() {
 
-    totalQuestions =
-        parseInt(questionCount.value);
+    const number =
+        Number(questionCount.value);
 
+
+    // Validate number of questions
     if (
-        isNaN(totalQuestions) ||
-        totalQuestions <= 0
+        !Number.isInteger(number) ||
+        number < 1 ||
+        number > 50
     ) {
+
         alert(
-            "Please enter a positive number."
+            "Please enter a number between 1 and 50."
         );
 
         return;
     }
 
+
+    totalQuestions = number;
+
     currentQuestion = 0;
+
     score = 0;
 
-    startScreen.classList.add("hidden");
 
-    resultsScreen.classList.add("hidden");
+    // Hide start screen
+    startScreen.classList.add(
+        "hidden"
+    );
 
-    quizScreen.classList.remove("hidden");
 
+    // Show quiz
+    quizScreen.classList.remove(
+        "hidden"
+    );
+
+
+    // Create first question
     generateQuestion();
 }
 
 
 // ==========================================
-// Generate Question
+// GENERATE QUESTION
 // ==========================================
 
 function generateQuestion() {
 
     currentQuestion++;
 
+    questionLocked = false;
+
+
     questionNumber.textContent =
         `Question ${currentQuestion} of ${totalQuestions}`;
 
+
     feedback.textContent = "";
+
+    feedback.className = "";
+
 
     answerInput.value = "";
 
-    answerInput.focus();
+    answerInput.disabled = false;
+
+    submitButton.disabled = false;
 
 
     const operators = [
@@ -361,94 +474,101 @@ function generateQuestion() {
         "/"
     ];
 
+
+    // Choose random operator
     const operator =
         operators[
-            randomInt(0, operators.length - 1)
+            randomInt(
+                0,
+                operators.length - 1
+            )
         ];
 
 
-    // Randomly decide which fraction
-    // must be a non-integer
-    const forceF1Fraction =
+    // Decide which fraction
+    // must be a fraction
+    const firstIsFraction =
         Math.random() < 0.5;
 
 
-    const f1 =
+    const fraction1 =
         generateFraction(
-            -10,
-            10,
-            forceF1Fraction
+            firstIsFraction
         );
 
 
-    let f2 =
+    let fraction2 =
         generateFraction(
-            -10,
-            10,
-            !forceF1Fraction
+            !firstIsFraction
         );
 
 
-    // Prevent division by zero
+    // Don't divide by zero
     if (operator === "/") {
 
-        while (f2.num === 0) {
+        while (fraction2.num === 0) {
 
-            f2 =
+            fraction2 =
                 generateFraction(
-                    -10,
-                    10,
-                    !forceF1Fraction
+                    !firstIsFraction
                 );
         }
     }
 
 
-    // Calculate answer
-    let expected;
-
-
+    // Calculate correct answer
     if (operator === "+") {
 
-        expected = f1.add(f2);
+        expectedAnswer =
+            fraction1.add(fraction2);
 
     } else if (operator === "-") {
 
-        expected = f1.subtract(f2);
+        expectedAnswer =
+            fraction1.subtract(
+                fraction2
+            );
 
     } else if (operator === "*") {
 
-        expected = f1.multiply(f2);
+        expectedAnswer =
+            fraction1.multiply(
+                fraction2
+            );
 
     } else {
 
-        expected = f1.divide(f2);
+        expectedAnswer =
+            fraction1.divide(
+                fraction2
+            );
     }
 
 
-    currentExpectedAnswer = expected;
+    // Put parentheses around negatives
+    const fraction1Text =
+        fraction1.num < 0
+            ? `(${fraction1})`
+            : fraction1.toString();
 
 
-    // Parentheses around negative numbers
-    const f1String =
-        f1.num < 0
-            ? `(${f1})`
-            : f1.toString();
+    const fraction2Text =
+        fraction2.num < 0
+            ? `(${fraction2})`
+            : fraction2.toString();
 
 
-    const f2String =
-        f2.num < 0
-            ? `(${f2})`
-            : f2.toString();
-
-
+    // Display problem
     problem.textContent =
-        `${f1String} ${operator} ${f2String}`;
+        `${fraction1Text} ${operator} ${fraction2Text}`;
+
+
+    answerInput.focus();
 }
 
 
 // ==========================================
-// Submit Answer
+// SUBMIT ANSWER BUTTON
 // ==========================================
 
 submitButton.addEventListener(
@@ -459,8 +579,15 @@ submitButton.addEventListener(
 
 function checkAnswer() {
 
+    // Don't allow multiple submissions
+    if (questionLocked) {
+        return;
+    }
+
+
     try {
 
+        // Read user's answer
         const userAnswer =
             Fraction.parse(
                 answerInput.value,
@@ -468,69 +595,76 @@ function checkAnswer() {
             );
 
 
-        // Check value
+        questionLocked = true;
+
+
+        answerInput.disabled = true;
+
+        submitButton.disabled = true;
+
+
+        // Correct AND simplified
         if (
             userAnswer.equals(
-                currentExpectedAnswer
+                expectedAnswer
+            ) &&
+            userAnswer.isSimplified()
+        ) {
+
+            score++;
+
+
+            feedback.textContent =
+                "Correct!";
+
+
+            feedback.className =
+                "correct";
+
+
+        // Correct value but not simplified
+        } else if (
+            userAnswer.equals(
+                expectedAnswer
             )
         ) {
 
-            // Check if simplified
-            if (userAnswer.isSimplified()) {
+            feedback.textContent =
+                `Your answer has the correct value, ` +
+                `but it is not simplified. ` +
+                `The answer is ${expectedAnswer}.`;
 
-                feedback.textContent =
-                    "Correct!";
 
-                feedback.className =
-                    "correct";
+            feedback.className =
+                "incorrect";
 
-                score++;
 
-            } else {
-
-                feedback.textContent =
-                    `Incorrect. Your value was correct, ` +
-                    `but it was not fully simplified. ` +
-                    `The simplified answer is ` +
-                    `${currentExpectedAnswer}.`;
-
-                feedback.className =
-                    "incorrect";
-            }
-
+        // Completely incorrect
         } else {
 
             feedback.textContent =
-                `Incorrect. The correct answer was ` +
-                `${currentExpectedAnswer}.`;
+                `Incorrect. The correct answer ` +
+                `is ${expectedAnswer}.`;
+
 
             feedback.className =
                 "incorrect";
         }
 
 
-        // Wait before moving to next question
-        setTimeout(() => {
-
-            if (
-                currentQuestion < totalQuestions
-            ) {
-
-                generateQuestion();
-
-            } else {
-
-                showResults();
-            }
-
-        }, 1500);
+        // Wait 1.5 seconds
+        // before next question
+        setTimeout(
+            nextStep,
+            1500
+        );
 
 
     } catch (error) {
 
+        // Invalid input
         feedback.textContent =
-            "Invalid format. Please enter a fraction " +
-            "(a/b) or an integer.";
+            "Invalid format. Enter something like 3/4 or 2.";
 
         feedback.className =
             "incorrect";
@@ -539,14 +673,39 @@ function checkAnswer() {
 
 
 // ==========================================
-// Show Results
+// NEXT QUESTION OR RESULTS
+// ==========================================
+
+function nextStep() {
+
+    if (
+        currentQuestion <
+        totalQuestions
+    ) {
+
+        generateQuestion();
+
+    } else {
+
+        showResults();
+    }
+}
+
+
+// ==========================================
+// RESULTS
 // ==========================================
 
 function showResults() {
 
-    quizScreen.classList.add("hidden");
+    quizScreen.classList.add(
+        "hidden"
+    );
 
-    resultsScreen.classList.remove("hidden");
+
+    resultsScreen.classList.remove(
+        "hidden"
+    );
 
 
     const percent =
@@ -580,15 +739,57 @@ function showResults() {
 
 
 // ==========================================
-// Restart Quiz
+// TRY AGAIN BUTTON
 // ==========================================
 
 restartButton.addEventListener(
     "click",
-    () => {
+    restartQuiz
+);
 
-        resultsScreen.classList.add("hidden");
 
-        startScreen.classList.remove("hidden");
+function restartQuiz() {
+
+    // Hide results
+    resultsScreen.classList.add(
+        "hidden"
+    );
+
+
+    // Show start screen
+    startScreen.classList.remove(
+        "hidden"
+    );
+
+
+    questionCount.focus();
+}
+
+
+// ==========================================
+// PRESS ENTER TO SUBMIT
+// ==========================================
+
+answerInput.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (event.key === "Enter") {
+
+            checkAnswer();
+        }
+    }
+);
+
+
+// Press Enter to start quiz
+questionCount.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (event.key === "Enter") {
+
+            startQuiz();
+        }
     }
 );

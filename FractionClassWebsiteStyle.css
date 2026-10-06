@@ -2,15 +2,17 @@
     box-sizing: border-box;
 }
 
+
 body {
     margin: 0;
+
     min-height: 100vh;
 
     display: flex;
     justify-content: center;
     align-items: center;
 
-    background: #1e1e2f;
+    background-color: #1e1e2f;
 
     font-family: Arial, sans-serif;
 }
@@ -22,7 +24,7 @@ body {
 
     padding: 40px;
 
-    background: white;
+    background-color: white;
 
     border-radius: 15px;
 
@@ -46,7 +48,7 @@ h1 {
 .problem {
     margin: 30px 0;
 
-    font-size: 36px;
+    font-size: 40px;
 
     font-weight: bold;
 }
@@ -67,6 +69,13 @@ input {
 }
 
 
+input:focus {
+    border-color: #333;
+
+    outline: none;
+}
+
+
 button {
     padding: 12px 25px;
 
@@ -82,28 +91,40 @@ button {
 
     cursor: pointer;
 
-    background: #333;
+    background-color: #333;
 
     color: white;
+
+    transition: 0.2s;
 }
 
 
 button:hover {
-    opacity: 0.85;
+    background-color: #555;
+
+    transform: scale(1.03);
+}
+
+
+button:active {
+    transform: scale(0.98);
+}
+
+
+#feedback {
+    min-height: 25px;
+
+    font-weight: bold;
 }
 
 
 .correct {
     color: green;
-
-    font-weight: bold;
 }
 
 
 .incorrect {
     color: red;
-
-    font-weight: bold;
 }
 
 
