@@ -161,3 +161,25 @@ button:active {
 .operator {
     padding: 0 5px;
 }
+
+.fraction {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    vertical-align: middle;
+    line-height: 1;
+}
+
+.fraction .numerator {
+    padding: 0 10px 5px;
+    border-bottom: 3px solid currentColor;
+}
+
+.fraction .denominator {
+    padding: 5px 10px 0;
+}
+
+.operator {
+    margin: 0 15px;
+    font-size: 2.5rem;
+}

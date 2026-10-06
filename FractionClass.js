@@ -458,15 +458,12 @@ function generateQuestion() {
 
     questionLocked = false;
 
-
     questionNumber.textContent =
         `Question ${currentQuestion} of ${totalQuestions}`;
-
 
     feedback.textContent = "";
 
     feedback.className = "";
-
 
     answerInput.value = "";
 
@@ -493,8 +490,7 @@ function generateQuestion() {
         ];
 
 
-    // Decide which fraction
-    // must be a fraction
+    // Decide which fraction must be a fraction
     const firstIsFraction =
         Math.random() < 0.5;
 
@@ -553,26 +549,12 @@ function generateQuestion() {
     }
 
 
-    // Put parentheses around negatives
-    const fraction1Text =
-        fraction1.num < 0
-            ? `(${fraction1})`
-            : fraction1.toString();
-
-
-    const fraction2Text =
-        fraction2.num < 0
-            ? `(${fraction2})`
-            : fraction2.toString();
-
-
     // Display problem
     problem.innerHTML = `
-    ${fractionHTML(fraction1)}
-    <span class="operator">${operator}</span>
-    ${fractionHTML(fraction2)}
-`;
-
+        ${fractionHTML(fraction1)}
+        <span class="operator">${operator}</span>
+        ${fractionHTML(fraction2)}
+    `;
 
     answerInput.focus();
 }
