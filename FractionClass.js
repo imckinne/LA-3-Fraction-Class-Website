@@ -439,6 +439,14 @@ function startQuiz() {
     generateQuestion();
 }
 
+function fractionHTML(fraction) {
+    return `
+        <span class="fraction">
+            <span class="numerator">${fraction.numerator}</span>
+            <span class="denominator">${fraction.denominator}</span>
+        </span>
+    `;
+}
 
 // ==========================================
 // GENERATE QUESTION
@@ -559,8 +567,11 @@ function generateQuestion() {
 
 
     // Display problem
-    problem.textContent =
-        `${fraction1Text} ${operator} ${fraction2Text}`;
+    problem.innerHTML = `
+    ${fractionHTML(fraction1)}
+    <span class="operator">${operator}</span>
+    ${fractionHTML(fraction2)}
+`;
 
 
     answerInput.focus();

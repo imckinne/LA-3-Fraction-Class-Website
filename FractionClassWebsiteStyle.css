@@ -131,3 +131,33 @@ button:active {
 .hidden {
     display: none;
 }
+
+.math-question {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+.fraction {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    vertical-align: middle;
+    line-height: 1;
+}
+
+.fraction .numerator {
+    padding: 0 10px 5px;
+    border-bottom: 3px solid currentColor;
+}
+
+.fraction .denominator {
+    padding: 5px 10px 0;
+}
+
+.operator {
+    padding: 0 5px;
+}
