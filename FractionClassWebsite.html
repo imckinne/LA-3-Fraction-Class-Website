@@ -21,20 +21,38 @@
         </p>
 
 
-        <!-- Start Screen -->
+        <!-- Settings / Start Screen -->
         <section id="start-screen">
 
-            <label for="question-count">
-                How many questions would you like to solve?
-            </label>
+            <div class="setting-group">
+                <label for="question-count">Number of Questions:</label>
+                <input
+                    type="number"
+                    id="question-count"
+                    min="1"
+                    max="50"
+                    value="5"
+                >
+            </div>
 
-            <input
-                type="number"
-                id="question-count"
-                min="1"
-                max="50"
-                value="5"
-            >
+            <div class="setting-group">
+                <label>Operations to Include:</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" id="op-add" value="+" checked> Addition (+)</label>
+                    <label><input type="checkbox" id="op-sub" value="-" checked> Subtraction (-)</label>
+                    <label><input type="checkbox" id="op-mul" value="*" checked> Multiplication (×)</label>
+                    <label><input type="checkbox" id="op-div" value="/" checked> Division (÷)</label>
+                </div>
+            </div>
+
+            <div class="setting-group">
+                <label>Value Range (Numerator/Denominator):</label>
+                <div class="range-inputs">
+                    <input type="number" id="range-min" value="-10" placeholder="Min">
+                    <span>to</span>
+                    <input type="number" id="range-max" value="10" placeholder="Max">
+                </div>
+            </div>
 
             <button id="start-button">
                 Start Quiz

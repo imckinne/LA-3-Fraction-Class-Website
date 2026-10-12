@@ -243,7 +243,9 @@ function randomInt(min, max) {
 
 
 function generateFraction(
-    forceNonInteger = false
+    forceNonInteger = false,
+    valMin = -10,
+    valMax = 10
 ) {
 
     while (true) {
@@ -251,16 +253,19 @@ function generateFraction(
         const minDenominator =
             forceNonInteger ? 2 : 1;
 
+        // Cap denominator min/max appropriately
+        const denMin = Math.max(minDenominator, 1);
+        const denMax = Math.max(Math.abs(valMin), Math.abs(valMax), 10);
 
         const denominator =
             randomInt(
-                minDenominator,
-                10
+                denMin,
+                denMax
             );
 
 
         const numerator =
-            randomInt(-10, 10);
+            randomInt(valMin, valMax);
 
 
         const fraction =
@@ -285,7 +290,7 @@ function generateFraction(
 
 
 // ==========================================
-// QUIZ VARIABLES
+// QUIZ & SETTINGS VARIABLES
 // ==========================================
 
 let currentQuestion = 0;
@@ -297,6 +302,12 @@ let score = 0;
 let expectedAnswer = null;
 
 let questionLocked = false;
+
+let selectedOperators = [];
+
+let rangeMinVal = -10;
+
+let rangeMaxVal = 10;
 
 
 // ==========================================
@@ -384,6 +395,10 @@ const resultMessage =
         "result-message"
     );
 
+const rangeMin = document.getElementById("range-min");
+
+const rangeMax = document.getElementById("range-max");
+
 
 // ==========================================
 // START QUIZ BUTTON
@@ -409,11 +424,41 @@ function startQuiz() {
     ) {
 
         alert(
-            "Please enter a number between 1 and 50."
+            "Please enter a question count between 1 and 50."
         );
 
         return;
     }
+
+
+    // Read selected operators
+    selectedOperators = [];
+    if (document.getElementById("op-add").checked) selectedOperators.push("+");
+    if (document.getElementById("op-sub").checked) selectedOperators.push("-");
+    if (document.getElementById("op-mul").checked) selectedOperators.push("*");
+    if (document.getElementById("op-div").checked) selectedOperators.push("/");
+
+    if (selectedOperators.length === 0) {
+        alert("Please select at least one operation to include.");
+        return;
+    }
+
+
+    // Validate range values
+    const minVal = Number(rangeMin.value);
+    const maxVal = Number(rangeMax.value);
+
+    if (
+        !Number.isInteger(minVal) ||
+        !Number.isInteger(maxVal) ||
+        minVal >= maxVal
+    ) {
+        alert("Please enter a valid range where Minimum is strictly less than Maximum.");
+        return;
+    }
+
+    rangeMinVal = minVal;
+    rangeMaxVal = maxVal;
 
 
     totalQuestions = number;
@@ -472,20 +517,12 @@ function generateQuestion() {
     submitButton.disabled = false;
 
 
-    const operators = [
-        "+",
-        "-",
-        "*",
-        "/"
-    ];
-
-
-    // Choose random operator
+    // Choose random operator from user's selected list
     const operator =
-        operators[
+        selectedOperators[
             randomInt(
                 0,
-                operators.length - 1
+                selectedOperators.length - 1
             )
         ];
 
@@ -497,13 +534,17 @@ function generateQuestion() {
 
     const fraction1 =
         generateFraction(
-            firstIsFraction
+            firstIsFraction,
+            rangeMinVal,
+            rangeMaxVal
         );
 
 
     let fraction2 =
         generateFraction(
-            !firstIsFraction
+            !firstIsFraction,
+            rangeMinVal,
+            rangeMaxVal
         );
 
 
@@ -514,7 +555,9 @@ function generateQuestion() {
 
             fraction2 =
                 generateFraction(
-                    !firstIsFraction
+                    !firstIsFraction,
+                    rangeMinVal,
+                    rangeMaxVal
                 );
         }
     }
@@ -770,19 +813,6 @@ answerInput.addEventListener(
         if (event.key === "Enter") {
 
             checkAnswer();
-        }
-    }
-);
-
-
-// Press Enter to start quiz
-questionCount.addEventListener(
-    "keydown",
-    function(event) {
-
-        if (event.key === "Enter") {
-
-            startQuiz();
         }
     }
 );
