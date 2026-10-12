@@ -253,7 +253,6 @@ function generateFraction(
         const minDenominator =
             forceNonInteger ? 2 : 1;
 
-        // Cap denominator min/max appropriately
         const denMin = Math.max(minDenominator, 1);
         const denMax = Math.max(Math.abs(valMin), Math.abs(valMax), 10);
 
@@ -399,6 +398,104 @@ const rangeMin = document.getElementById("range-min");
 
 const rangeMax = document.getElementById("range-max");
 
+const helpModal = document.getElementById("help-modal");
+const modalTitle = document.getElementById("modal-title");
+const modalBody = document.getElementById("modal-body");
+const closeModalBtn = document.getElementById("close-modal");
+
+
+// ==========================================
+// HELP MODAL GUIDES
+// ==========================================
+
+const OPERATOR_GUIDES = {
+    "+": {
+        title: "Adding Fractions (+)",
+        html: `
+            <ol>
+                <li>Find a common denominator by multiplying bottom numbers: <code>den = b × d</code>.</li>
+                <li>Cross-multiply to adjust top numbers: <code>num = (a × d) + (b × c)</code>.</li>
+                <li>Simplify the resulting fraction to its lowest terms.</li>
+            </ol>
+            <div class="example-box">
+                <strong>Example:</strong> 1/3 + 1/4<br>
+                Bottom: 3 × 4 = 12<br>
+                Top: (1 × 4) + (3 × 1) = 7<br>
+                Result: <strong>7/12</strong>
+            </div>
+        `
+    },
+    "-": {
+        title: "Subtracting Fractions (-)",
+        html: `
+            <ol>
+                <li>Find a common denominator by multiplying bottom numbers: <code>den = b × d</code>.</li>
+                <li>Cross-multiply and subtract: <code>num = (a × d) - (b × c)</code>.</li>
+                <li>Simplify the resulting fraction to its lowest terms.</li>
+            </ol>
+            <div class="example-box">
+                <strong>Example:</strong> 3/4 - 1/2<br>
+                Bottom: 4 × 2 = 8<br>
+                Top: (3 × 2) - (4 × 1) = 2<br>
+                Unsimplified: 2/8 &rarr; <strong>1/4</strong>
+            </div>
+        `
+    },
+    "*": {
+        title: "Multiplying Fractions (×)",
+        html: `
+            <ol>
+                <li>Multiply the top numbers together: <code>num = a × c</code>.</li>
+                <li>Multiply the bottom numbers together: <code>den = b × d</code>.</li>
+                <li>Simplify the resulting fraction to its lowest terms.</li>
+            </ol>
+            <div class="example-box">
+                <strong>Example:</strong> 2/3 × 3/5<br>
+                Top: 2 × 3 = 6<br>
+                Bottom: 3 × 5 = 15<br>
+                Unsimplified: 6/15 &rarr; <strong>2/5</strong>
+            </div>
+        `
+    },
+    "/": {
+        title: "Dividing Fractions (÷)",
+        html: `
+            <ol>
+                <li>Flip the second fraction upside down (reciprocal).</li>
+                <li>Multiply the first fraction by this flipped fraction.</li>
+                <li>Simplify the resulting fraction to its lowest terms.</li>
+            </ol>
+            <div class="example-box">
+                <strong>Example:</strong> 1/2 ÷ 3/4<br>
+                Flip 3/4 &rarr; 4/3<br>
+                Multiply: 1/2 × 4/3 = 4/6 &rarr; <strong>2/3</strong>
+            </div>
+        `
+    }
+};
+
+document.querySelectorAll(".help-btn").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+        const op = e.target.getAttribute("data-op");
+        const guide = OPERATOR_GUIDES[op];
+        if (guide) {
+            modalTitle.textContent = guide.title;
+            modalBody.innerHTML = guide.html;
+            helpModal.classList.remove("hidden");
+        }
+    });
+});
+
+closeModalBtn.addEventListener("click", () => {
+    helpModal.classList.add("hidden");
+});
+
+helpModal.addEventListener("click", (e) => {
+    if (e.target === helpModal) {
+        helpModal.classList.add("hidden");
+    }
+});
+
 
 // ==========================================
 // START QUIZ BUTTON
@@ -416,7 +513,6 @@ function startQuiz() {
         Number(questionCount.value);
 
 
-    // Validate number of questions
     if (
         !Number.isInteger(number) ||
         number < 1 ||
@@ -431,7 +527,6 @@ function startQuiz() {
     }
 
 
-    // Read selected operators
     selectedOperators = [];
     if (document.getElementById("op-add").checked) selectedOperators.push("+");
     if (document.getElementById("op-sub").checked) selectedOperators.push("-");
@@ -444,7 +539,6 @@ function startQuiz() {
     }
 
 
-    // Validate range values
     const minVal = Number(rangeMin.value);
     const maxVal = Number(rangeMax.value);
 
@@ -468,19 +562,16 @@ function startQuiz() {
     score = 0;
 
 
-    // Hide start screen
     startScreen.classList.add(
         "hidden"
     );
 
 
-    // Show quiz
     quizScreen.classList.remove(
         "hidden"
     );
 
 
-    // Create first question
     generateQuestion();
 }
 
@@ -517,7 +608,6 @@ function generateQuestion() {
     submitButton.disabled = false;
 
 
-    // Choose random operator from user's selected list
     const operator =
         selectedOperators[
             randomInt(
@@ -527,7 +617,6 @@ function generateQuestion() {
         ];
 
 
-    // Decide which fraction must be a fraction
     const firstIsFraction =
         Math.random() < 0.5;
 
@@ -548,7 +637,6 @@ function generateQuestion() {
         );
 
 
-    // Don't divide by zero
     if (operator === "/") {
 
         while (fraction2.num === 0) {
@@ -563,7 +651,6 @@ function generateQuestion() {
     }
 
 
-    // Calculate correct answer
     if (operator === "+") {
 
         expectedAnswer =
@@ -592,7 +679,6 @@ function generateQuestion() {
     }
 
 
-    // Display problem
     problem.innerHTML = `
         ${fractionHTML(fraction1)}
         <span class="operator">${operator}</span>
@@ -615,7 +701,6 @@ submitButton.addEventListener(
 
 function checkAnswer() {
 
-    // Don't allow multiple submissions
     if (questionLocked) {
         return;
     }
@@ -623,7 +708,6 @@ function checkAnswer() {
 
     try {
 
-        // Read user's answer
         const userAnswer =
             Fraction.parse(
                 answerInput.value,
@@ -639,7 +723,6 @@ function checkAnswer() {
         submitButton.disabled = true;
 
 
-        // Correct AND simplified
         if (
             userAnswer.equals(
                 expectedAnswer
@@ -658,7 +741,6 @@ function checkAnswer() {
                 "correct";
 
 
-        // Correct value but not simplified
         } else if (
             userAnswer.equals(
                 expectedAnswer
@@ -675,7 +757,6 @@ function checkAnswer() {
                 "incorrect";
 
 
-        // Completely incorrect
         } else {
 
             feedback.textContent =
@@ -688,8 +769,6 @@ function checkAnswer() {
         }
 
 
-        // Wait 1.5 seconds
-        // before next question
         setTimeout(
             nextStep,
             1500
@@ -698,7 +777,6 @@ function checkAnswer() {
 
     } catch (error) {
 
-        // Invalid input
         feedback.textContent =
             "Invalid format. Enter something like 3/4 or 2.";
 
@@ -786,13 +864,11 @@ restartButton.addEventListener(
 
 function restartQuiz() {
 
-    // Hide results
     resultsScreen.classList.add(
         "hidden"
     );
 
 
-    // Show start screen
     startScreen.classList.remove(
         "hidden"
     );

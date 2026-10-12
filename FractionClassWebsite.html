@@ -38,10 +38,25 @@
             <div class="setting-group">
                 <label>Operations to Include:</label>
                 <div class="checkbox-group">
-                    <label><input type="checkbox" id="op-add" value="+" checked> Addition (+)</label>
-                    <label><input type="checkbox" id="op-sub" value="-" checked> Subtraction (-)</label>
-                    <label><input type="checkbox" id="op-mul" value="*" checked> Multiplication (×)</label>
-                    <label><input type="checkbox" id="op-div" value="/" checked> Division (÷)</label>
+                    <div class="op-item">
+                        <label><input type="checkbox" id="op-add" value="+" checked> Addition (+)</label>
+                        <button class="help-btn" data-op="+" type="button" aria-label="Help with Addition">?</button>
+                    </div>
+
+                    <div class="op-item">
+                        <label><input type="checkbox" id="op-sub" value="-" checked> Subtraction (-)</label>
+                        <button class="help-btn" data-op="-" type="button" aria-label="Help with Subtraction">?</button>
+                    </div>
+
+                    <div class="op-item">
+                        <label><input type="checkbox" id="op-mul" value="*" checked> Multiplication (×)</label>
+                        <button class="help-btn" data-op="*" type="button" aria-label="Help with Multiplication">?</button>
+                    </div>
+
+                    <div class="op-item">
+                        <label><input type="checkbox" id="op-div" value="/" checked> Division (÷)</label>
+                        <button class="help-btn" data-op="/" type="button" aria-label="Help with Division">?</button>
+                    </div>
                 </div>
             </div>
 
@@ -101,6 +116,15 @@
         </section>
 
     </main>
+
+    <!-- Help Modal Overlay -->
+    <div id="help-modal" class="modal hidden">
+        <div class="modal-content">
+            <button id="close-modal" aria-label="Close modal">&times;</button>
+            <h2 id="modal-title">How to Solve</h2>
+            <div id="modal-body"></div>
+        </div>
+    </div>
 
 
     <script src="FractionClass.js"></script>

@@ -65,15 +65,48 @@ h1 {
     flex-wrap: wrap;
 }
 
-.checkbox-group label {
+.op-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(255, 255, 255, 0.75);
+    padding: 4px 8px;
+    border-radius: 8px;
+    border: 1px solid #c3dafe;
+}
+
+.op-item label {
+    margin-bottom: 0;
     font-weight: normal;
     color: #333;
     font-size: 0.95rem;
     cursor: pointer;
-    background: rgba(255, 255, 255, 0.7);
-    padding: 5px 10px;
-    border-radius: 8px;
-    border: 1px solid #c3dafe;
+}
+
+.help-btn {
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    padding: 0;
+    margin: 0;
+    border-radius: 50%;
+    border: none;
+    background-color: #00bcd4;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 0 #00838f;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.1s;
+}
+
+.help-btn:hover {
+    background-color: #26c6da;
+    transform: scale(1.1);
+    box-shadow: 0 3px 0 #00838f;
 }
 
 .range-inputs {
@@ -163,7 +196,7 @@ button:active {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 .math-question {
@@ -197,4 +230,80 @@ button:active {
     margin: 0 15px;
     font-size: 2.5rem;
     color: #ff6f00;
+}
+
+/* Modal Overlay Styles */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: #ffffff;
+    padding: 25px 30px;
+    border-radius: 16px;
+    max-width: 450px;
+    width: 90%;
+    position: relative;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    text-align: left;
+    border: 4px solid #6ba4e8;
+}
+
+#close-modal {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: #888;
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+}
+
+#close-modal:hover {
+    color: #333;
+    background: none;
+    transform: none;
+}
+
+#modal-title {
+    margin-top: 0;
+    color: #2b5797;
+    font-size: 1.5rem;
+}
+
+#modal-body ol {
+    padding-left: 20px;
+    line-height: 1.6;
+    color: #444;
+}
+
+#modal-body code {
+    background: #f0f4f9;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: monospace;
+    color: #d32f2f;
+}
+
+.example-box {
+    margin-top: 15px;
+    background: #fdf3e7;
+    border-left: 4px solid #ff9800;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    line-height: 1.5;
 }
