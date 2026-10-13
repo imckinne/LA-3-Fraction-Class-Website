@@ -118,9 +118,19 @@
 
             <p id="result-message"></p>
 
-            <button id="restart-button">
-                Try Again
-            </button>
+            <div class="results-actions">
+                <button id="toggle-explanations-button" type="button">
+                    Show Explanations
+                </button>
+                <button id="restart-button" type="button">
+                    Try Again
+                </button>
+            </div>
+
+            <div id="explanations-container" class="hidden">
+                <h3>Question Breakdown & Solutions</h3>
+                <div id="explanations-list"></div>
+            </div>
 
         </section>
 

@@ -191,11 +191,15 @@ let currentQuestion = 0;
 let totalQuestions = 0;
 let score = 0;
 let expectedAnswer = null;
+let currentFraction1 = null;
+let currentFraction2 = null;
+let currentOperator = null;
 let questionLocked = false;
 let selectedOperators = [];
 let rangeMinVal = -10;
 let rangeMaxVal = 10;
 let allowMixedNumbers = false;
+let questionHistory = [];
 
 
 // ==========================================
@@ -210,6 +214,9 @@ const questionCount = document.getElementById("question-count");
 const startButton = document.getElementById("start-button");
 const submitButton = document.getElementById("submit-button");
 const restartButton = document.getElementById("restart-button");
+const toggleExplanationsBtn = document.getElementById("toggle-explanations-button");
+const explanationsContainer = document.getElementById("explanations-container");
+const explanationsList = document.getElementById("explanations-list");
 
 const answerInput = document.getElementById("answer");
 const problem = document.getElementById("problem");
@@ -363,6 +370,7 @@ function startQuiz() {
     totalQuestions = number;
     currentQuestion = 0;
     score = 0;
+    questionHistory = [];
 
     startScreen.classList.add("hidden");
     quizScreen.classList.remove("hidden");
@@ -372,12 +380,10 @@ function startQuiz() {
 
 
 function fractionHTML(fraction) {
-    // Displays as integer if denominator is 1
     if (fraction.den === 1) {
         return `<span class="integer-number">${fraction.num}</span>`;
     }
 
-    // Displays mixed number if enabled and improper
     if (allowMixedNumbers && Math.abs(fraction.num) > fraction.den) {
         const whole = Math.trunc(fraction.num / fraction.den);
         const remainder = Math.abs(fraction.num % fraction.den);
@@ -417,35 +423,95 @@ function generateQuestion() {
     answerInput.disabled = false;
     submitButton.disabled = false;
 
-    const operator = selectedOperators[randomInt(0, selectedOperators.length - 1)];
+    currentOperator = selectedOperators[randomInt(0, selectedOperators.length - 1)];
     const firstIsFraction = Math.random() < 0.5;
 
-    const fraction1 = generateFraction(firstIsFraction, rangeMinVal, rangeMaxVal);
-    let fraction2 = generateFraction(!firstIsFraction, rangeMinVal, rangeMaxVal);
+    currentFraction1 = generateFraction(firstIsFraction, rangeMinVal, rangeMaxVal);
+    currentFraction2 = generateFraction(!firstIsFraction, rangeMinVal, rangeMaxVal);
 
-    if (operator === "/") {
-        while (fraction2.num === 0) {
-            fraction2 = generateFraction(!firstIsFraction, rangeMinVal, rangeMaxVal);
+    if (currentOperator === "/") {
+        while (currentFraction2.num === 0) {
+            currentFraction2 = generateFraction(!firstIsFraction, rangeMinVal, rangeMaxVal);
         }
     }
 
-    if (operator === "+") {
-        expectedAnswer = fraction1.add(fraction2);
-    } else if (operator === "-") {
-        expectedAnswer = fraction1.subtract(fraction2);
-    } else if (operator === "*") {
-        expectedAnswer = fraction1.multiply(fraction2);
+    if (currentOperator === "+") {
+        expectedAnswer = currentFraction1.add(currentFraction2);
+    } else if (currentOperator === "-") {
+        expectedAnswer = currentFraction1.subtract(currentFraction2);
+    } else if (currentOperator === "*") {
+        expectedAnswer = currentFraction1.multiply(currentFraction2);
     } else {
-        expectedAnswer = fraction1.divide(fraction2);
+        expectedAnswer = currentFraction1.divide(currentFraction2);
     }
 
     problem.innerHTML = `
-        ${fractionHTML(fraction1)}
-        <span class="operator">${operator}</span>
-        ${fractionHTML(fraction2)}
+        ${fractionHTML(currentFraction1)}
+        <span class="operator">${currentOperator}</span>
+        ${fractionHTML(currentFraction2)}
     `;
 
     answerInput.focus();
+}
+
+
+// ==========================================
+// GENERATE EXPLANATION TEXT
+// ==========================================
+
+function buildExplanation(f1, f2, op, ans) {
+    const a = f1.num, b = f1.den;
+    const c = f2.num, d = f2.den;
+    const formattedAns = ans.toString(allowMixedNumbers);
+
+    if (op === "+") {
+        const rawNum = a * d + c * b;
+        const rawDen = b * d;
+        let text = `Common Denominator: ${b} × ${d} = ${rawDen}.<br>`;
+        text += `Adjust Numerators: (${a} × ${d}) + (${b} × ${c}) = ${rawNum}.<br>`;
+        text += `Unsimplified Result: ${rawNum}/${rawDen}.`;
+        if (ans.isSimplified()) {
+            text += `<br>Final Simplified Answer: <strong>${formattedAns}</strong>`;
+        }
+        return text;
+    }
+
+    if (op === "-") {
+        const rawNum = a * d - c * b;
+        const rawDen = b * d;
+        let text = `Common Denominator: ${b} × ${d} = ${rawDen}.<br>`;
+        text += `Adjust Numerators: (${a} × ${d}) - (${b} × ${c}) = ${rawNum}.<br>`;
+        text += `Unsimplified Result: ${rawNum}/${rawDen}.`;
+        if (ans.isSimplified()) {
+            text += `<br>Final Simplified Answer: <strong>${formattedAns}</strong>`;
+        }
+        return text;
+    }
+
+    if (op === "*") {
+        const rawNum = a * c;
+        const rawDen = b * d;
+        let text = `Multiply Numerators: ${a} × ${c} = ${rawNum}.<br>`;
+        text += `Multiply Denominators: ${b} × ${d} = ${rawDen}.<br>`;
+        text += `Unsimplified Result: ${rawNum}/${rawDen}.`;
+        if (ans.isSimplified()) {
+            text += `<br>Final Simplified Answer: <strong>${formattedAns}</strong>`;
+        }
+        return text;
+    }
+
+    if (op === "/") {
+        let text = `Reciprocal of second fraction: ${d}/${c}.<br>`;
+        const rawNum = a * d;
+        const rawDen = b * c;
+        text += `Multiply: (${a}/${b}) × (${d}/${c}) = ${rawNum}/${rawDen}.`;
+        if (ans.isSimplified()) {
+            text += `<br>Final Simplified Answer: <strong>${formattedAns}</strong>`;
+        }
+        return text;
+    }
+
+    return "";
 }
 
 
@@ -459,6 +525,9 @@ function checkAnswer() {
 
     if (questionLocked) return;
 
+    let isCorrect = false;
+    let userRawInput = answerInput.value.trim() || "(No Answer)";
+
     try {
         const userAnswer = Fraction.parse(answerInput.value, false);
 
@@ -470,6 +539,7 @@ function checkAnswer() {
 
         if (userAnswer.equals(expectedAnswer) && userAnswer.isSimplified()) {
             score++;
+            isCorrect = true;
             feedback.textContent = "Correct!";
             feedback.className = "correct";
         } else if (userAnswer.equals(expectedAnswer)) {
@@ -483,14 +553,29 @@ function checkAnswer() {
             feedback.className = "incorrect";
         }
 
-        setTimeout(nextStep, 1500);
-
     } catch (error) {
+        questionLocked = true;
+        answerInput.disabled = true;
+        submitButton.disabled = true;
+
         feedback.textContent = allowMixedNumbers
             ? "Invalid format. Enter e.g. 3/4, 2, or 1 1/2."
             : "Invalid format. Enter e.g. 3/4 or 2.";
         feedback.className = "incorrect";
     }
+
+    questionHistory.push({
+        num: currentQuestion,
+        f1: currentFraction1,
+        f2: currentFraction2,
+        op: currentOperator,
+        expected: expectedAnswer,
+        userAnswerText: userRawInput,
+        correct: isCorrect,
+        explanation: buildExplanation(currentFraction1, currentFraction2, currentOperator, expectedAnswer)
+    });
+
+    setTimeout(nextStep, 1500);
 }
 
 
@@ -519,6 +604,51 @@ function showResults() {
     } else {
         resultMessage.textContent = "Good effort! A bit more practice will get you there.";
     }
+
+    explanationsContainer.classList.add("hidden");
+    toggleExplanationsBtn.textContent = "Show Explanations";
+}
+
+
+toggleExplanationsBtn.addEventListener("click", () => {
+    if (explanationsContainer.classList.contains("hidden")) {
+        renderExplanations();
+        explanationsContainer.classList.remove("hidden");
+        toggleExplanationsBtn.textContent = "Hide Explanations";
+    } else {
+        explanationsContainer.classList.add("hidden");
+        toggleExplanationsBtn.textContent = "Show Explanations";
+    }
+});
+
+
+function renderExplanations() {
+    explanationsList.innerHTML = "";
+
+    questionHistory.forEach((q) => {
+        const item = document.createElement("div");
+        item.className = `explanation-card ${q.correct ? "card-correct" : "card-incorrect"}`;
+
+        const problemStr = `${q.f1.toString(allowMixedNumbers)} ${q.op} ${q.f2.toString(allowMixedNumbers)}`;
+        const correctStr = q.expected.toString(allowMixedNumbers);
+
+        item.innerHTML = `
+            <div class="card-header">
+                <strong>Q${q.num}: ${problemStr}</strong>
+                <span class="status-badge">${q.correct ? "✓ Correct" : "✗ Incorrect"}</span>
+            </div>
+            <div class="card-details">
+                <p><strong>Your Answer:</strong> ${q.userAnswerText}</p>
+                <p><strong>Correct Answer:</strong> ${correctStr}</p>
+                <div class="step-explanation">
+                    <strong>Solution Steps:</strong>
+                    <div class="steps-body">${q.explanation}</div>
+                </div>
+            </div>
+        `;
+
+        explanationsList.appendChild(item);
+    });
 }
 
 
