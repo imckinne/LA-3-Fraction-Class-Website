@@ -21,7 +21,7 @@ body {
 .quiz-container {
     width: 90%;
     max-width: 680px; 
-    padding: 30px 40px;
+    padding: 25px 40px;
 
     background-color: transparent;
     border-radius: 20px;
@@ -41,12 +41,12 @@ h1 {
     color: #555;
     font-weight: 600;
     font-size: 1rem;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
 /* Settings Controls Styling */
 .setting-group {
-    margin-bottom: 15px;
+    margin-bottom: 12px;
     text-align: center;
 }
 
@@ -55,7 +55,7 @@ h1 {
     font-weight: bold;
     color: #2b5797;
     margin-bottom: 6px;
-    font-size: 1rem;
+    font-size: 0.98rem;
 }
 
 .checkbox-group {
@@ -75,12 +75,20 @@ h1 {
     border: 1px solid #c3dafe;
 }
 
-.op-item label {
+.op-item label,
+.mixed-toggle {
     margin-bottom: 0;
     font-weight: normal;
     color: #333;
     font-size: 0.95rem;
     cursor: pointer;
+}
+
+.mixed-toggle {
+    background: rgba(255, 255, 255, 0.75);
+    padding: 4px 12px;
+    border-radius: 8px;
+    border: 1px solid #c3dafe;
 }
 
 .help-btn {
@@ -157,7 +165,7 @@ input:focus {
 
 button {
     padding: 10px 28px;
-    margin-top: 10px;
+    margin-top: 8px;
     font-size: 18px;
     font-weight: bold;
     border: none;
@@ -215,6 +223,16 @@ button:active {
     align-items: center;
     vertical-align: middle;
     line-height: 1;
+}
+
+.mixed-fraction {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.integer-number {
+    display: inline-block;
 }
 
 .fraction .numerator {

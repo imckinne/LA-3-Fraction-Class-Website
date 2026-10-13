@@ -61,6 +61,15 @@
             </div>
 
             <div class="setting-group">
+                <label>Number Format:</label>
+                <div class="checkbox-group">
+                    <label class="mixed-toggle">
+                        <input type="checkbox" id="use-mixed-numbers"> Allow Mixed Numbers (e.g. 1 1/2)
+                    </label>
+                </div>
+            </div>
+
+            <div class="setting-group">
                 <label>Value Range (Numerator/Denominator):</label>
                 <div class="range-inputs">
                     <input type="number" id="range-min" value="-10" placeholder="Min">
@@ -86,7 +95,7 @@
             <input
                 type="text"
                 id="answer"
-                placeholder="Example: -3/4 or 2"
+                placeholder="Example: -3/4, 2, or 1 1/2"
             >
 
             <button id="submit-button">
